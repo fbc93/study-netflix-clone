@@ -2,6 +2,8 @@ import { HelmetProvider } from "react-helmet-async";
 import Router from "./Router";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { darkTheme } from "./theme";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -68,9 +70,11 @@ function App() {
     <>
       <ThemeProvider theme={darkTheme}>
         <GlobalStyle />
+        <Navbar />
         <HelmetProvider>
           <Router />
         </HelmetProvider>
+        <Footer />
       </ThemeProvider>
     </>
   );
