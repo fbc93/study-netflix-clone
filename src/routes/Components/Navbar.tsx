@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { motion } from 'framer-motion';
+import { motion, useAnimation, useScroll } from 'framer-motion';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-const Wrapper = styled.nav`
-  border:1px solid red;
+const Wrapper = styled(motion.nav)`
   height: 7rem;
   position: fixed;
   z-index:100;
@@ -15,7 +16,7 @@ const Wrapper = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
+  
 `;
 
 const LeftBox = styled.div`
@@ -49,9 +50,14 @@ const NavItem = styled.li`
   }
 
   a {
-    color:${props => props.theme.textColor};
     font-size:1.4rem;
     margin-bottom:0.8rem;
+    color:rgba(255,255,255,0.5);
+  }
+
+  .active{
+    color:rgba(255,255,255,1);
+    font-weight: 500;
   }
 `;
 
@@ -67,14 +73,22 @@ const ActiveDot = styled(motion.div)`
 `;
 
 const RightBox = styled.div``;
-const SearchForm = styled.div`
+const SearchForm = styled(motion.form)`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #ffff;
-  width:25rem;
   height: 3.7rem;
-  overflow: hidden;
+  &:hover{
+    svg {
+        scale:1.5;
+        fill:${props => props.theme.brandColor}
+      }
+    }
+
+  svg {
+    cursor:pointer;
+    transition: all ease-in-out 0.2s;
+  }
 
   input {
     width:20rem;
@@ -82,15 +96,81 @@ const SearchForm = styled.div`
     background-color: transparent;
     border-color: transparent;
     width: 100%;
-    color:${props => props.theme.textColor};
+    color:rgba(255,255,255,1);
     margin-right:1rem;
+    outline: none;
+    font-size:1.4rem;
+    letter-spacing: -0.1rem;
+    caret-color: ${props => props.theme.brandColor};
+    &::placeholder {
+      color:rgba(255,255,255,0.5);
+    }
   }
 `;
 
+const Input = styled.input``;
+
+const searchVariant = {
+  hidden: {
+    border: "1px solid transparent",
+    width: 5 + "rem",
+    backgroundColor: "transparent"
+  },
+  visible: {
+    border: "1px solid rgba(255,255,255,1)",
+    width: "25rem",
+    backgroundColor: "black"
+  }
+}
+
+const navVariants = {
+  top: {
+    backgroundImage: "linear-gradient(180deg,rgba(0,0,0,0.7) 10%,rgba(0,0,0,0))",
+  },
+  scroll: {
+    backgroundImage: "linear-gradient(180deg,rgba(0,0,0,1) 10%,rgba(0,0,0,1))",
+    transition: {
+      duration: 0.5
+    }
+  }
+}
+
+interface IForm {
+  keyword: string;
+}
+
 function Navbar() {
+  const { scrollY } = useScroll();
+  const navAnimation = useAnimation();
+  const searchAnimation = useAnimation();
+  const navigate = useNavigate();
+  const homeMatch = useMatch("/");
+  const tvMatch = useMatch("/tv");
+
+  const { register, resetField, handleSubmit } = useForm<IForm>({
+    mode: "onChange",
+    defaultValues: {
+      keyword: ""
+    }
+  });
+
+  const onValid = (data: IForm) => {
+    navigate(`search?keyword=${data.keyword}`);
+    resetField("keyword");
+  }
+
+  useEffect(() => {
+    scrollY.on("change", () => {
+      if (scrollY.get() > 70) {
+        navAnimation.start("scroll");
+      } else {
+        navAnimation.start("top");
+      }
+    })
+  }, [scrollY, navAnimation])
 
   return (
-    <Wrapper>
+    <Wrapper variants={navVariants} initial="top" animate={navAnimation}>
 
       <LeftBox>
         <HomeLink to={"/"}>
@@ -102,20 +182,34 @@ function Navbar() {
         </HomeLink>
         <NavList>
           <NavItem>
-            <Link to={"/"} >영화</Link>
-            <ActiveDot />
+            <Link to={"/"} className={homeMatch ? "active" : ""} onClick={() => searchAnimation.start("hidden")}>영화</Link>
+            {homeMatch && <ActiveDot layoutId="active-dot" />}
           </NavItem>
           <NavItem>
-            <Link to={"/tv"} >TV 시리즈</Link>
-            <ActiveDot />
+            <Link to={"/tv"} className={tvMatch ? "active" : ""} onClick={() => searchAnimation.start("hidden")}>TV 시리즈</Link>
+            {tvMatch && <ActiveDot layoutId="active-dot" />}
           </NavItem>
         </NavList>
       </LeftBox>
 
       <RightBox>
-        <SearchForm>
-          <SearchRoundedIcon style={{ fontSize: 25, margin: "0.5rem 1rem" }} />
-          <input type="text" placeholder="영화나 TV시리즈를 검색하세요 🕵️" />
+        <SearchForm
+          variants={searchVariant}
+          initial="hidden"
+          animate={searchAnimation}
+          transition={{ type: "linear", delay: 0.3, duration: 0.2 }}
+          onSubmit={handleSubmit(onValid)}
+        >
+          <SearchRoundedIcon
+            style={{ fontSize: 25, margin: "0.5rem 1rem" }}
+            onClick={() => searchAnimation.start("visible")}
+          />
+          <Input
+            {...register("keyword", { required: true, minLength: 2 })}
+            type="text"
+            placeholder="영화나 TV시리즈를 검색하세요 🕵️"
+            autoFocus={true}
+          />
         </SearchForm>
       </RightBox>
 

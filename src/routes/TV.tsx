@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchAiringTodays, fetchLatestTVs, fetchMovieGenres, fetchPopularTVs, fetchTopRatedTVs, fetchTVGenres, IVisualBanner } from "../api";
+import { fetchAiringTodays, fetchLatestTVs, fetchMovieGenres, fetchMovieVideos, fetchPopularTVs, fetchTopRatedTVs, fetchTVGenres, fetchTvVideos, IVisualBanner } from "../api";
+import { getRandomVideoData } from "../utils";
 import Modal from "./Components/Modal";
 import Slider from "./Components/Slider";
 import VisualBanner from "./Components/VisualBanner";
@@ -10,10 +11,11 @@ import VisualBanner from "./Components/VisualBanner";
 const Wrapper = styled.main``;
 
 function TV() {
-  //Latest TVs
-  //Airing today TVs
-  //Popular TVs
-  //Top Rated TVs
+  //DATA
+  const { data: topRatedD, isLoading: topRatedL } = useQuery(
+    "topRated_tv", fetchTopRatedTVs
+  );
+
   const { data: latestD, isLoading: latestL } = useQuery(
     "latest_tv", fetchLatestTVs
   );
@@ -26,10 +28,6 @@ function TV() {
     "popular_tv", fetchPopularTVs
   );
 
-  const { data: topRatedD, isLoading: topRatedL } = useQuery(
-    "topRated_tv", fetchTopRatedTVs
-  );
-
   const { data: movieGenreD, isLoading: movieGenreL } = useQuery(
     "movie_genre", fetchMovieGenres
   );
@@ -40,23 +38,7 @@ function TV() {
 
   const TvGenreData = tvGenreD?.genres;
   const MovieGenreData = movieGenreD?.genres;
-
-  //refresh
-  // let location = useLocation();
-  // let currentPath = "/tv";
-
-  // useEffect(() => {
-  //   if (currentPath === location.pathname) window.location.reload();
-  //   currentPath = location.pathname;
-  // }, [location]);
-
-  // useEffect(() => {
-  //   window.location.reload();
-  // }, []);
-
-  useEffect(() => {
-    console.log('match222')
-  }, []);
+  const tvUrl = "tv";
 
   return (
     <>
@@ -65,9 +47,10 @@ function TV() {
           <VisualBanner
             media_type="tv"
             data={topRatedD as IVisualBanner}
-            isLoading={latestL as boolean}
+            isLoading={topRatedL as boolean}
             MGenre={MovieGenreData as any[]}
             TGenre={TvGenreData as any[]}
+            videoType={tvUrl}
           />
         )}
         <Slider title="TV latest" />

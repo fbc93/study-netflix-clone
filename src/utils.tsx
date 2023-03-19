@@ -38,12 +38,15 @@ export const convertGenreIdToNm = (genreArray: number[], media_type: string, TvG
 export function getRandomVideoData(movieVideoD: IVideos) {
   const results = movieVideoD?.results;
 
-  if (results?.length > 0) {
+  if (results?.length > 1) {
     const min = 1;
     const max = results?.length;
     const idx = Math.floor((Math.random() * (max - min)) + min);
-    const result = movieVideoD?.results[idx].key;
+    const result = movieVideoD?.results[idx]?.key;
+    return result;
 
+  } else if (results?.length === 1) {
+    const result = movieVideoD?.results[0]?.key;
     return result;
   }
 }

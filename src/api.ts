@@ -22,14 +22,14 @@ export function fetchUpcomingMovies() {
     .then((res) => res.json());
 }
 
+//movie video
 export function fetchMovieVideos(MOVIE_ID: number) {
-  return fetch(`${BASE_URL}/movie/${MOVIE_ID}/videos?api_key=${API_KEY}`)
-    .then((res) => res.json());
+  return fetch(`${BASE_URL}/movie/${MOVIE_ID}/videos?api_key=${API_KEY}`).then((res) => res.json());
 }
 
+//tv video
 export function fetchTvVideos(TV_ID: number) {
-  return fetch(`${BASE_URL}/tv/${TV_ID}/videos?api_key=${API_KEY}`)
-    .then((res) => res.json());
+  return fetch(`${BASE_URL}/tv/${TV_ID}/videos?api_key=${API_KEY}`).then((res) => res.json());
 }
 
 export function fetchLatestTVs() {
@@ -100,4 +100,6 @@ export interface INowPlayingMovie {
   title: string;
   backdrop_path: string;
   popularity: number;
+  name: string;
+  original_name: string;
 }

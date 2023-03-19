@@ -4,11 +4,12 @@ import { convertGenreIdToNm, getRandomVideoData, setImagePathSize } from "../../
 import { Skeleton } from "@mui/material";
 import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useLocation } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: block;
@@ -237,39 +238,46 @@ function VisualBanner({
   isLoading,
   MGenre,
   TGenre,
-  media_type
+  media_type,
+  videoType
+
+
 }: {
   media_type: string;
   data: IVisualBanner;
   isLoading: boolean;
   MGenre: IGenreList[];
   TGenre: IGenreList[];
+  videoType: string;
 
 }) {
   const firstData = data.results[0];
   const [isPlay, setIsPlay] = useState(true);
   const togglePlay = () => setIsPlay(prev => !prev);
-  const clickToPlay = () => {
-    togglePlay();
-  }
+  const clickToPlay = () => togglePlay();
+  const [url, setUrl] = useState(videoType);
 
-  const { data: movieVideoD, isLoading: movieVideoL } = useQuery(
+  const { data: movieVideoD } = useQuery(
     "movie_video",
     () => fetchMovieVideos(firstData.id)
   );
 
-  const { data: tvVideoD, isLoading: tvVideoL } = useQuery(
+  const { data: tvVideoD } = useQuery(
     "tv_video",
     () => fetchTvVideos(firstData.id)
   );
 
+  useEffect(() => {
+    switch (videoType) {
+      case "movie":
+        setUrl(`https://youtu.be/${getRandomVideoData(movieVideoD)}`);
+        break
 
-
-  //console.log(movieVideoD, getRandomVideoData());
-  //console.log(convertGenreIdToNm(firstData.genre_ids, "movie", TGenre, MGenre))
-  //console.log(movieVideoD)
-
-
+      case "tv":
+        setUrl(`https://youtu.be/${getRandomVideoData(tvVideoD)}`);
+        break
+    }
+  }, [videoType, movieVideoD, tvVideoD]);
 
   return (
     <Wrapper>
@@ -289,7 +297,7 @@ function VisualBanner({
                 {isPlay && (
                   <VideoWrap>
                     <ReactPlayer
-                      url={`https://youtu.be/${getRandomVideoData(movieVideoD ? movieVideoD : tvVideoD)}`}
+                      url={url}
                       width="100vw"
                       height="56.25vw"
                       style={{ position: "relative", zIndex: 3, pointerEvents: "none" }}
@@ -320,7 +328,7 @@ function VisualBanner({
                       delay: 0.4,
                       duration: 1
                     }}>
-                    {firstData.original_title ? firstData.original_title : ""}
+                    {firstData.original_title ? firstData.original_title : firstData.original_name}
                   </OriginalTitle>
                   <Title
                     initial={{ opacity: 0, y: 15 }}
@@ -329,7 +337,7 @@ function VisualBanner({
                       delay: 0.4,
                       duration: 1
                     }}>
-                    {firstData.title ? firstData.title : firstData.original_title}
+                    {firstData.title ? firstData.title : firstData.name}
                   </Title>
                   <GenreTagList
                     initial={{ opacity: 0, y: 15 }}
@@ -367,7 +375,7 @@ function VisualBanner({
                     <TrailerPlayBtn onClick={clickToPlay}>
                       {isPlay ? (
                         <>
-                          <PauseCircleOutlineIcon fontSize="large" style={{ marginRight: 7 }} />
+                          <StopCircleOutlinedIcon fontSize="large" style={{ marginRight: 7 }} />
                           <span>정지</span>
                         </>
                       ) : (

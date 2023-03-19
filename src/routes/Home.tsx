@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchLatestMovies, fetchMovieGenres, fetchNowPlayingMovies, fetchTopRatedMovies, fetchTVGenres, fetchUpcomingMovies, IGenreList, INowPlayingMovie, IVisualBanner } from "../api";
+import { fetchLatestMovies, fetchMovieGenres, fetchMovieVideos, fetchNowPlayingMovies, fetchTopRatedMovies, fetchTVGenres, fetchTvVideos, fetchUpcomingMovies, IGenreList, INowPlayingMovie, IVisualBanner } from "../api";
+import { getRandomVideoData } from "../utils";
 import Modal from "./Components/Modal";
 import Navbar from "./Components/Navbar";
 import Slider from "./Components/Slider";
@@ -38,23 +39,7 @@ function Home() {
 
   const TvGenreData = tvGenreD?.genres;
   const MovieGenreData = movieGenreD?.genres;
-
-  //refresh
-  // let location = useLocation();
-  // let currentPath = "";
-
-  // useEffect(() => {
-  //   window.location.reload();
-  // }, []);
-
-  //console.log(useLocation().pathname)
-
-
-  // useEffect(() => {
-  //   console.log('match')
-  // }, []);
-
-
+  const movieUrl = "movie";
 
   return (
     <>
@@ -66,6 +51,7 @@ function Home() {
             isLoading={nowPlayingL as boolean}
             MGenre={MovieGenreData as IGenreList[]}
             TGenre={TvGenreData as IGenreList[]}
+            videoType={movieUrl}
           />
         )}
         <Slider title="latest" />
