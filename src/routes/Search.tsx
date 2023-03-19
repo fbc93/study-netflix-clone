@@ -1,5 +1,9 @@
 import { useQuery } from "react-query";
-import { fetchSearch } from "../api";
+import styled from "styled-components";
+import { fetchSearch, INowPlayingMovie } from "../api";
+import Slider from "./Components/Slider";
+
+const Wrapper = styled.main``;
 
 function Search() {
   //Search
@@ -10,7 +14,11 @@ function Search() {
   //console.log(searchD)
 
   return (
-    <div>Search</div>
+    <Wrapper>
+      <Slider title="movie" />
+      <Slider title="tv" />
+      <Slider title="people" />
+    </Wrapper>
   )
 }
 

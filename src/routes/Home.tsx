@@ -1,15 +1,21 @@
-import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchLatestMovies, fetchTopRatedMovies, fetchUpcomingMovies } from "../api";
-import VisualBanner from "../components/VisualBanner";
+import { fetchLatestMovies, fetchMovieGenres, fetchNowPlayingMovies, fetchTopRatedMovies, fetchTVGenres, fetchUpcomingMovies, IGenreList, INowPlayingMovie, IVisualBanner } from "../api";
+import Modal from "./Components/Modal";
+import Navbar from "./Components/Navbar";
+import Slider from "./Components/Slider";
+import VisualBanner from "./Components/VisualBanner";
 
-const Wrapper = styled(motion.div)``;
+const Wrapper = styled.main``;
 
 function Home() {
-  //Latest movies
-  //Top Rated movies
-  //Upcoming movies
+  //DATA
+  const { data: nowPlayingD, isLoading: nowPlayingL } = useQuery(
+    "now_playing", fetchNowPlayingMovies
+  );
+
   const { data: latestD, isLoading: latestL } = useQuery(
     "latest_movie", fetchLatestMovies
   );
@@ -22,11 +28,52 @@ function Home() {
     "upcoming_movie", fetchUpcomingMovies
   );
 
-  //console.log(upcomingD);
+  const { data: movieGenreD, isLoading: movieGenreL } = useQuery(
+    "movie_genre", fetchMovieGenres
+  );
+
+  const { data: tvGenreD, isLoading: tvGenreL } = useQuery(
+    "tv_genre", fetchTVGenres
+  );
+
+  const TvGenreData = tvGenreD?.genres;
+  const MovieGenreData = movieGenreD?.genres;
+
+  //refresh
+  // let location = useLocation();
+  // let currentPath = "";
+
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, []);
+
+  //console.log(useLocation().pathname)
+
+
+  // useEffect(() => {
+  //   console.log('match')
+  // }, []);
+
+
+
   return (
-    <Wrapper>
-      <VisualBanner />
-    </Wrapper>
+    <>
+      <Wrapper>
+        {nowPlayingD && (
+          <VisualBanner
+            media_type="movie"
+            data={nowPlayingD as IVisualBanner}
+            isLoading={nowPlayingL as boolean}
+            MGenre={MovieGenreData as IGenreList[]}
+            TGenre={TvGenreData as IGenreList[]}
+          />
+        )}
+        <Slider title="latest" />
+        <Slider title="top rated" />
+        <Slider title="upcoming" />
+      </Wrapper>
+      <Modal />
+    </>
   )
 }
 
