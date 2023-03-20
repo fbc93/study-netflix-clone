@@ -1,9 +1,14 @@
+import { Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchLatestMovies, fetchMovieGenres, fetchMovieVideos, fetchNowPlayingMovies, fetchTopRatedMovies, fetchTVGenres, fetchTvVideos, fetchUpcomingMovies, IGenreList, INowPlayingMovie, IVisualBanner } from "../api";
+import { fetchLatestMovies, fetchMovieGenres, fetchMovieVideos, fetchNowPlayingMovies, fetchTopRatedMovies, fetchTVGenres, fetchTvVideos, fetchUpcomingMovies, IGenreList, ILatestSlider, INowPlayingMovie, IVisualBanner } from "../api";
 import { getRandomVideoData } from "../utils";
+import ErrorSlider from "./Components/Error/ErrorSlider";
+import ErrorVisualBanner from "./Components/Error/ErrorVisualBanner";
+import LatestSlider from "./Components/LatestSlider";
+
 import Modal from "./Components/Modal";
 import Navbar from "./Components/Navbar";
 import Slider from "./Components/Slider";
@@ -41,10 +46,13 @@ function Home() {
   const MovieGenreData = movieGenreD?.genres;
   const movieUrl = "movie";
 
+  console.log(topRatedD?.results)
+  console.log(latestD)
+
   return (
     <>
       <Wrapper>
-        {nowPlayingD && (
+        {nowPlayingD ?
           <VisualBanner
             media_type="movie"
             data={nowPlayingD as IVisualBanner}
@@ -52,13 +60,47 @@ function Home() {
             MGenre={MovieGenreData as IGenreList[]}
             TGenre={TvGenreData as IGenreList[]}
             videoType={movieUrl}
-          />
-        )}
-        <Slider title="latest" />
-        <Slider title="top rated" />
-        <Slider title="upcoming" />
+          /> :
+          <ErrorVisualBanner dataName="nowPlaying" />
+        }
+        {nowPlayingD ?
+          <Slider
+            media_type="movie"
+            title="🔥 NOW Playing Movies"
+            data={nowPlayingD as IVisualBanner}
+            isLoading={nowPlayingL as boolean}
+          /> :
+          <ErrorSlider dataName="nowPlaying" />
+        }
+        {upcomingD ?
+          <Slider
+            media_type="movie"
+            title="📆 Upcoming Movies"
+            data={upcomingD as IVisualBanner}
+            isLoading={upcomingL as boolean}
+          /> :
+          <ErrorSlider dataName="upcoming" />
+        }
+        {topRatedD ?
+          <Slider
+            media_type="movie"
+            title="🏆 TOP Rated Movies"
+            data={topRatedD as IVisualBanner}
+            isLoading={topRatedL as boolean}
+          /> :
+          <ErrorSlider dataName="topRated" />
+        }
+        {latestD ?
+          <LatestSlider
+            media_type="movie"
+            title="📌 Latest Movies"
+            data={latestD as ILatestSlider}
+            isLoading={latestL as boolean}
+          /> :
+          <ErrorSlider dataName="latest" />
+        }
       </Wrapper>
-      <Modal />
+      {/* <Modal /> */}
     </>
   )
 }

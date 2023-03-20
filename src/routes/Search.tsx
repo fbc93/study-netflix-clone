@@ -15,9 +15,9 @@ function Search() {
 
   return (
     <Wrapper>
-      <Slider title="movie" />
+      {/* <Slider title="movie" />
       <Slider title="tv" />
-      <Slider title="people" />
+      <Slider title="people" /> */}
     </Wrapper>
   )
 }

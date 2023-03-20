@@ -53,7 +53,7 @@ export function getRandomVideoData(movieVideoD: IVideos) {
 
 //size: original Or w500
 export function setImagePathSize(size: string, path: string) {
-  return `https://image.tmdb.org/t/p/${size}/${path}`;
+  return `https://image.tmdb.org/t/p/${size}${path}`;
 }
 
 //get current window width

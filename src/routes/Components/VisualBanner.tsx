@@ -118,7 +118,7 @@ const BottonShadow = styled.div`
 `;
 
 const InfoLayer = styled.div`
-  bottom: 35%;
+  bottom: 40%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -298,7 +298,7 @@ function VisualBanner({
                   <VideoWrap>
                     <ReactPlayer
                       url={url}
-                      width="100vw"
+                      width="100%"
                       height="56.25vw"
                       style={{ position: "relative", zIndex: 3, pointerEvents: "none" }}
                       loop={true}

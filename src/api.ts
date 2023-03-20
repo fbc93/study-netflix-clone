@@ -103,3 +103,14 @@ export interface INowPlayingMovie {
   name: string;
   original_name: string;
 }
+
+export interface ILatestSlider {
+  adult: boolean;
+  backdrop_path: string;
+  id: number;
+  original_title: string;
+  status: string;
+  title: string;
+  poster_path: string;
+  name: string;
+}

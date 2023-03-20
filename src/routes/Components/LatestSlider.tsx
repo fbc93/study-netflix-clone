@@ -4,12 +4,13 @@ import { useState } from "react";
 import styled from "styled-components";
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { IVisualBanner } from "../../api";
+import { ILatestSlider, IVisualBanner } from "../../api";
 import { setImagePathSize } from "./../../utils";
 import { useNavigate } from "react-router-dom";
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
+import NoAdultContentIcon from '@mui/icons-material/NoAdultContent';
 
 const Wrapper = styled.section`
   margin: 0 0 4vw 0;
@@ -91,9 +92,6 @@ const SliderItem = styled(motion.div) <{ offset: number }>`
   &:first-child {
     transform-origin: center left!important;
   }
-  &:last-child {
-    transform-origin: center right!important;
-  }
   &:hover{
     .info-box {
       opacity:1;
@@ -108,6 +106,43 @@ const BackDropImage = styled(motion.div) <{ bgimg: string }>`
   background-size: cover;
   position: relative;
   z-index:2;
+`;
+
+const NullImage = styled(motion.div)`
+  width:100%;
+  height: 100%;
+  position: relative;
+  background-color: #222222;
+  z-index:2;
+  display: flex;
+  text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
+  h2 {
+    font-size:1.5vw;
+    display: inline-block;
+    width:100%;
+    text-align: center;
+    align-self: center;
+  }
+`;
+
+const AdultContent = styled(motion.div)`
+  width:100%;
+  height:10vw;
+  position: relative;
+  background-color: #222222;
+  z-index:2;
+  display: flex;
+  text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
+  cursor: pointer;
+  &:hover {
+    svg {
+      fill:${props => props.theme.brandColor};
+    }
+  }
+  svg {
+    align-self: center;
+    width:100%;
+  }
 `;
 
 const InfoBottomBox = styled.div`
@@ -144,7 +179,7 @@ const IconWrapper = styled.div`
   }
 `;
 
-function Slider({
+function LatestSlider({
   media_type,
   title,
   data,
@@ -152,7 +187,7 @@ function Slider({
 }: {
   media_type: string;
   title: string;
-  data: IVisualBanner;
+  data: ILatestSlider;
   isLoading: boolean;
 }) {
   const offset = 6;
@@ -168,7 +203,7 @@ function Slider({
       toggleLeaving(true);
       setIsRight(right);
 
-      const totalLength = data.results.length - 1;
+      const totalLength = Number(Object.keys(data)) - 1;
       const maxIdx = Math.floor(totalLength / offset) - 1;
 
       switch (right) {
@@ -257,58 +292,67 @@ function Slider({
                 duration: 1
               }}
             >
-              {data.results
-                .slice(offset * index, offset * index + offset)
-                .map((item) => (
-                  !isLoading ? (
-                    <SliderItem
-                      key={item.id}
-                      layoutId={`${item.id}_${title}`}
-                      variants={SliderItemVar}
-                      initial="normal"
-                      whileHover="hover"
-                      offset={offset}
-                      onClick={() => onBoxClicked(item.id)}
-                    >
+              {!isLoading ? (
+                data.adult ? (
+                  <AdultContent>
+                    <NoAdultContentIcon style={{ fontSize: "5vw", opacity: 0.2 }} />
+                  </AdultContent>
+                ) : (
+                  <SliderItem
+                    key={data.id}
+                    layoutId={`${data.id}_${title}`}
+                    variants={SliderItemVar}
+                    initial="normal"
+                    whileHover="hover"
+                    offset={offset}
+                    onClick={() => onBoxClicked(data.id)}
+                  >
+                    {data.backdrop_path || data.poster_path ?
                       <BackDropImage
-                        key={`${item.id}_${title}_backdrop`}
+                        key={`${data.id}_${title}_backdrop`}
                         variants={BackBgVar}
                         initial="hidden"
                         animate="visible"
                         transition={{ delay: 1.6 }}
-                        bgimg={setImagePathSize("w500", item.backdrop_path)}
-                      />
-                      <InfoBottomBox className="info-box">
-                        <IconWrapper>
-                          <ul>
-                            <li><StopCircleOutlinedIcon fontSize="large" /></li>
-                            <li><ExpandCircleDownOutlinedIcon fontSize="large" /></li>
-                            <li><ControlPointOutlinedIcon fontSize="large" /></li>
-                          </ul>
-                          <ExpandCircleDownOutlinedIcon fontSize="large" />
-                        </IconWrapper>
+                        bgimg={setImagePathSize("w500", data.backdrop_path ? data.backdrop_path : data.poster_path)}
+                      /> :
+                      <NullImage>
+                        <h2>Image Null</h2>
+                      </NullImage>
+                    }
 
-                        <p>{item.title ? item.title : item.name}</p>
-                      </InfoBottomBox>
-                    </SliderItem>
+                    <InfoBottomBox className="info-box">
+                      <IconWrapper>
+                        <ul>
+                          <li><StopCircleOutlinedIcon fontSize="large" /></li>
+                          <li><ExpandCircleDownOutlinedIcon fontSize="large" /></li>
+                          <li><ControlPointOutlinedIcon fontSize="large" /></li>
+                        </ul>
+                        <ExpandCircleDownOutlinedIcon fontSize="large" />
+                      </IconWrapper>
 
-                  ) : (
-                    <SliderItem
-                      key={item.id}
-                      layoutId={item.id + "trend"}
-                      variants={SliderItemVar}
-                      initial="normal"
-                      whileHover="hover"
-                      offset={offset}
-                    >
-                      <Skeleton
-                        sx={{ bgcolor: 'grey.900' }}
-                        variant="rectangular"
-                        width={100 + "%"}
-                        height={100 + "%"}
-                      />
-                    </SliderItem>
-                  )))}
+                      <p>{data.title ? data.title : data.name}</p>
+                    </InfoBottomBox>
+                  </SliderItem>
+                )
+              ) : (
+                <SliderItem
+                  key={data.id}
+                  layoutId={data.id + "trend"}
+                  variants={SliderItemVar}
+                  initial="normal"
+                  whileHover="hover"
+                  offset={offset}
+                >
+                  <Skeleton
+                    sx={{ bgcolor: 'grey.900' }}
+                    variant="rectangular"
+                    width={100 + "%"}
+                    height={100 + "%"}
+                  />
+                </SliderItem>
+              )
+              }
             </SliderWrap>
           </AnimatePresence>
         </SliderTrail>
@@ -317,8 +361,8 @@ function Slider({
         </HandleNext>
       </SliderRow>
 
-    </Wrapper>
+    </Wrapper >
   );
 }
 
-export default Slider;
+export default LatestSlider;
