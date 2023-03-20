@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { fetchAiringTodays, fetchLatestTVs, fetchMovieGenres, fetchPopularTVs, fetchTopRatedTVs, fetchTVGenres, ILatestSlider, IVisualBanner } from "../api";
@@ -8,7 +9,7 @@ import Modal from "./Components/Modal";
 import Slider from "./Components/Slider";
 import VisualBanner from "./Components/VisualBanner";
 
-const Wrapper = styled.main``;
+const Wrapper = styled(motion.main)``;
 
 function TV() {
   //DATA
@@ -28,11 +29,11 @@ function TV() {
     "popular_tv", fetchPopularTVs
   );
 
-  const { data: movieGenreD, isLoading: movieGenreL } = useQuery(
+  const { data: movieGenreD } = useQuery(
     "movie_genre", fetchMovieGenres
   );
 
-  const { data: tvGenreD, isLoading: tvGenreL } = useQuery(
+  const { data: tvGenreD } = useQuery(
     "tv_genre", fetchTVGenres
   );
 
@@ -40,9 +41,23 @@ function TV() {
   const MovieGenreData = movieGenreD?.genres;
   const tvUrl = "tv";
 
+  const wrapperVariant = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+    }
+  }
+
   return (
     <>
-      <Wrapper>
+      <Wrapper
+        variants={wrapperVariant}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.2, duration: 1 }}
+      >
         {topRatedD ?
           <VisualBanner
             media_type="tv"

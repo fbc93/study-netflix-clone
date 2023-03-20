@@ -6,10 +6,12 @@ import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRound
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { IVisualBanner } from "../../api";
 import { setImagePathSize } from "./../../utils";
-import { useNavigate } from "react-router-dom";
+import { PathMatch, useMatch, useNavigate } from "react-router-dom";
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
+import Modal from "./Modal";
+
 
 const Wrapper = styled.section`
   margin: 0 0 4vw 0;
@@ -162,6 +164,10 @@ function Slider({
   const navigate = useNavigate();
   const toggleLeaving = (value: boolean) => setLeaving(value);
 
+  const modalMatch: PathMatch<string> | null = useMatch(
+    `/${media_type}/:id`
+  );
+
   const sliderButton = (right: number) => {
     if (data) {
       if (leaving) return;
@@ -185,6 +191,7 @@ function Slider({
 
   const onBoxClicked = (media_id: number) => {
     navigate(`/${media_type}/${media_id}`);
+    //console.log(media_id, media_type)
   };
 
   const SliderWrapVariant = {
@@ -310,6 +317,14 @@ function Slider({
                     </SliderItem>
                   )))}
             </SliderWrap>
+          </AnimatePresence>
+          <AnimatePresence>
+            {modalMatch ? (
+              <Modal
+                mediaId={Number(modalMatch?.params.id)}
+                mediaType={media_type}
+              />
+            ) : null}
           </AnimatePresence>
         </SliderTrail>
         <HandleNext onClick={() => sliderButton(1)} >

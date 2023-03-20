@@ -160,7 +160,6 @@ function SearchSlider({
   const [index, setIndex] = useState(0);
   const [isRight, setIsRight] = useState(1);
   const [leaving, setLeaving] = useState(false);
-  const navigate = useNavigate();
   const toggleLeaving = (value: boolean) => setLeaving(value);
 
   const sliderButton = (right: number) => {
@@ -184,8 +183,8 @@ function SearchSlider({
     }
   }
 
-  const onBoxClicked = (media_id: number) => {
-    navigate(`/${media_type}/${media_id}`);
+  const onBoxClicked = (media_id: number, media_type: string) => {
+    console.log(media_id, media_type);
   };
 
   const SliderWrapVariant = {
@@ -267,7 +266,7 @@ function SearchSlider({
                   initial="normal"
                   whileHover="hover"
                   offset={offset}
-                  onClick={() => onBoxClicked(item.id)}
+                  onClick={() => onBoxClicked(item.id, item.media_type)}
                 >
                   <BackDropImage
                     key={`${item.id}_${title}_backdrop`}

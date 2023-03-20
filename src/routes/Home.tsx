@@ -1,4 +1,5 @@
 import { Skeleton } from "@mui/material";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -14,7 +15,7 @@ import Navbar from "./Components/Navbar";
 import Slider from "./Components/Slider";
 import VisualBanner from "./Components/VisualBanner";
 
-const Wrapper = styled.main``;
+const Wrapper = styled(motion.main)``;
 
 function Home() {
   //DATA
@@ -34,13 +35,22 @@ function Home() {
     "upcoming_movie", fetchUpcomingMovies
   );
 
-  const { data: movieGenreD, isLoading: movieGenreL } = useQuery(
+  const { data: movieGenreD } = useQuery(
     "movie_genre", fetchMovieGenres
   );
 
-  const { data: tvGenreD, isLoading: tvGenreL } = useQuery(
+  const { data: tvGenreD } = useQuery(
     "tv_genre", fetchTVGenres
   );
+
+  const wrapperVariant = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+    }
+  }
 
   const TvGenreData = tvGenreD?.genres;
   const MovieGenreData = movieGenreD?.genres;
@@ -48,7 +58,12 @@ function Home() {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper
+        variants={wrapperVariant}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.2, duration: 1 }}
+      >
         {nowPlayingD ?
           <VisualBanner
             media_type="movie"

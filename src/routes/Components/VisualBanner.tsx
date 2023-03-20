@@ -13,7 +13,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 const Wrapper = styled.div`
   display: block;
   position: relative;
-  z-index: 1;
+  z-index: 0;
 `;
 
 const MainViewRow = styled.div`

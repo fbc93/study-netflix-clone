@@ -67,6 +67,11 @@ export function fetchTVGenres() {
     .then((res) => res.json());
 }
 
+export function fetchDetails(MEDIA_TYPE: string, MEDIA_ID: number) {
+  return fetch(`${BASE_URL}/${MEDIA_TYPE}/${MEDIA_ID}?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
+    .then((res) => res.json());
+}
+
 interface IVideo {
   key: string;
 }
@@ -132,5 +137,9 @@ export interface ISearch {
 
 export interface ISearchSlider {
   results: ISearch[];
+}
+
+export interface IModal {
+  backdrop_path: string;
 }
 

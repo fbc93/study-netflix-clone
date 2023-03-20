@@ -47,6 +47,8 @@ const GlobalStyle = createGlobalStyle`
     color:${props => props.theme.textColor};
     line-height: 1;
     margin:0;
+    //overflow-y: hidden;
+    //overflow-y:auto;
   }
   main{
     

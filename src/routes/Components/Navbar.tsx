@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 const Wrapper = styled(motion.nav)`
   height: 7rem;
   position: fixed;
-  z-index:100;
+  z-index:1;
   top:0;
   left:0;
   width:100%;
