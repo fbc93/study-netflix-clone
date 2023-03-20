@@ -46,9 +46,6 @@ function Home() {
   const MovieGenreData = movieGenreD?.genres;
   const movieUrl = "movie";
 
-  console.log(topRatedD?.results)
-  console.log(latestD)
-
   return (
     <>
       <Wrapper>

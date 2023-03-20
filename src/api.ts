@@ -114,3 +114,23 @@ export interface ILatestSlider {
   poster_path: string;
   name: string;
 }
+
+export interface ISearch {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  media_type: string;
+  original_title: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  name: string;
+  profile_path: string;
+}
+
+export interface ISearchSlider {
+  results: ISearch[];
+}
+

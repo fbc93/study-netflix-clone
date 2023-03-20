@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchAiringTodays, fetchLatestTVs, fetchMovieGenres, fetchMovieVideos, fetchPopularTVs, fetchTopRatedTVs, fetchTVGenres, fetchTvVideos, ILatestSlider, IVisualBanner } from "../api";
-import { getRandomVideoData } from "../utils";
+import { fetchAiringTodays, fetchLatestTVs, fetchMovieGenres, fetchPopularTVs, fetchTopRatedTVs, fetchTVGenres, ILatestSlider, IVisualBanner } from "../api";
 import ErrorSlider from "./Components/Error/ErrorSlider";
 import ErrorVisualBanner from "./Components/Error/ErrorVisualBanner";
 import LatestSlider from "./Components/LatestSlider";

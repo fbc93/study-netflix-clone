@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { useLocation } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: block;
