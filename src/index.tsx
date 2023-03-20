@@ -90,7 +90,7 @@ root.render(
         <ThemeProvider theme={darkTheme}>
           <GlobalStyle />
 
-          <Router>
+          <Router basename={process.env.PUBLIC_URL}>
             <App />
           </Router>
 

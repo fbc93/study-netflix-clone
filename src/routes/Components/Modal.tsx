@@ -32,7 +32,7 @@ const BackDropOverlay = styled(motion.div)`
 `;
 
 const Wrapper = styled(motion.div)`
-  width:80vw;
+  width:70vw;
   background-color: #181818;
   align-self: center;
   z-index: 30;
@@ -97,7 +97,7 @@ const OriginalTitle = styled.span`
 
 const OverView = styled.div`
   font-size:2vw;
-  padding:0 4vw;
+  padding:0px 4vw 10vw;
   margin-top:2vw;
   line-height: 1.8;
   font-weight: 400;
